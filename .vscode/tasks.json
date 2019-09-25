@@ -1,0 +1,41 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558 
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "SFML": "../Libs/SFML-2.5.1",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build All",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-I",
+                "$INCLUDES",
+                "-g",
+                "$SOURCE",
+                "-o",
+                "Vulkanism.out",
+                "-L",
+                "$LIBS",
+                "$LINKS",
+                "-v"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "INCLUDES": "${config:tasks.SFML}/include/",
+                    "SOURCE": "main.cpp",
+                    "LIBS": "${config:tasks.SFML}/lib/",
+                    "LINKS": "-lsfml-window -lsfml-system -lsfml-graphics"
+                }
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
