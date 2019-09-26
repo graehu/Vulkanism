@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}",
-                "${workspaceFolder}/../Libs/SFML-2.5.1/include"
+                "${workspaceFolder}/${config:tasks.SFML}/include",
+                "${workspaceFolder}/${config:tasks.Vulkan}/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

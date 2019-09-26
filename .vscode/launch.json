@@ -12,7 +12,12 @@
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [{"name": "LD_LIBRARY_PATH", "value": "../Libs/SFML-2.5.1/lib/"}],
+            "environment": [
+                {
+                    "name": "LD_LIBRARY_PATH",
+                    "value": "${config:tasks.SFML}/lib/:${config:tasks.Vulkan}/lib/"
+                }
+            ],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
