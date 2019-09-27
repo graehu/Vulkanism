@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}",
                 "${workspaceFolder}/${config:tasks.SFML}/include",
-                "${workspaceFolder}/${config:tasks.Vulkan}/include"
+                "${workspaceFolder}/${config:tasks.Vulkan}/include",
+                "${workspaceFolder}/${config:tasks.GLFW}/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",
