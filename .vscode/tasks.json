@@ -5,6 +5,7 @@
     "SFML": "../Libs/SFML-2.5.1",
     "Vulkan": "../Libs/Vulkan/1.1.121.1/x86_64",
     "GLFW": "../Libs/glfw-3.3",
+    "GLM": "../Libs/glm-0.9.9.6",
     "tasks": [
         {
             "type": "shell",
@@ -14,6 +15,7 @@
                 "$SFML",
                 "$VULKAN",
                 "$GLFW",
+                "$GLM",
                 "-g",
                 "$SOURCE",
                 "-o",
@@ -27,6 +29,7 @@
                     "VULKAN": "-I${config:tasks.Vulkan}/include/ -L${config:tasks.Vulkan}/lib/",
                     "SFML": "-I${config:tasks.SFML}/include/ -L${config:tasks.SFML}/lib/",
                     "GLFW": "-I${config:tasks.GLFW}/include/ -L${config:tasks.GLFW}/lib/",
+                    "GLM": "-I${config:tasks.GLM}",
                     "SOURCE": "main.cpp",
                     "LINKS": "-lsfml-window -lsfml-system -lsfml-graphics -lvulkan -lglfw"
                 }

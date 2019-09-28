@@ -1,16 +1,48 @@
 #include <iostream>
-#include "SFML/Graphics.hpp"
 #include "vulkan/vulkan.hpp"
-#include "GLFW/glfw3.h"
-
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
 using namespace std;
 
-int main()
+class Renderer
 {
-    sf::RenderWindow window(sf::VideoMode(640, 480), "Vulkanism");
-    sf::WindowHandle handle = window.getSystemHandle();
-    sf::ContextSettings settings = window.getSettings();
+private:
+    void InitWindow();
+    void InitVulkan();
+    void CreateInstance();
+    void MainLoop();
+    void Cleanup();
+    //
+    GLFWwindow* window = nullptr;
     VkInstance instance;
+public:
+    Renderer();
+    ~Renderer();
+    void run()
+    {
+        InitWindow();
+        InitVulkan();
+        MainLoop();
+        Cleanup();
+    }
+};
+
+Renderer::Renderer() { }
+Renderer::~Renderer() { }
+
+void Renderer::InitWindow()
+{
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    window = glfwCreateWindow(800, 600, "Vulkanism", nullptr, nullptr);
+    cout << window << endl;
+}
+void Renderer::InitVulkan()
+{
+    CreateInstance();
+}
+void Renderer::CreateInstance()
+{
     //app info
     VkApplicationInfo app_info = {};
     app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -24,21 +56,42 @@ int main()
     create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     create_info.pApplicationInfo = &app_info;
     //
-    uint32_t extension_count = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions;
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-    while (window.isOpen())
+    create_info.enabledExtensionCount = glfwExtensionCount;
+    create_info.ppEnabledExtensionNames = glfwExtensions;
+    create_info.enabledLayerCount = 0;
+    VkResult resault = vkCreateInstance(&create_info, nullptr, &instance);
+}
+void Renderer::MainLoop()
+{
+    while (!glfwWindowShouldClose(window))
     {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-            {
-                window.close();
-            }
-        }
-        window.clear();
-        window.display();
+      glfwPollEvents();
+    }  
+}
+void Renderer::Cleanup()
+{
+    vkDestroyInstance(instance, nullptr);
+    glfwDestroyWindow(window);
+    glfwTerminate();
+}
+
+
+
+int main()
+{
+    Renderer renderer;
+    try
+    {
+        renderer.run();
     }
-    return 0;
+    catch (const std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
 }
