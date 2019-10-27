@@ -12,7 +12,6 @@
             "label": "Build All",
             "command": "/usr/bin/g++",
             "args": [
-                "$SFML",
                 "$VULKAN",
                 "$GLFW",
                 "$GLM",
@@ -31,7 +30,7 @@
                     "GLFW": "-I${config:tasks.GLFW}/include/ -L${config:tasks.GLFW}/lib/",
                     "GLM": "-I${config:tasks.GLM}",
                     "SOURCE": "main.cpp",
-                    "LINKS": "-lsfml-window -lsfml-system -lsfml-graphics -lvulkan -lglfw"
+                    "LINKS": "-lvulkan -lglfw"
                 }
             },
             "problemMatcher": [

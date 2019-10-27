@@ -32,10 +32,10 @@ Renderer::~Renderer() { }
 
 void Renderer::InitWindow()
 {
+    glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    window = glfwCreateWindow(800, 600, "Vulkanism", nullptr, nullptr);
-    cout << window << endl;
+    window = glfwCreateWindow(400, 300, "Vulkanism", nullptr, nullptr);
 }
 void Renderer::InitVulkan()
 {

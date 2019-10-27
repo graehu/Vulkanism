@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "g++ build and debug active file",
+            "name": "Build and Run!",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/Vulkanism.out",
@@ -15,7 +15,7 @@
             "environment": [
                 {
                     "name": "LD_LIBRARY_PATH",
-                    "value": "${config:tasks.SFML}/lib/:${config:tasks.Vulkan}/lib/:${config:tasks.GLFW}/lib/"
+                    "value": "${config:tasks.Vulkan}/lib/:${config:tasks.GLFW}/lib/"
                 }
             ],
             "externalConsole": false,
