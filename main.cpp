@@ -2,13 +2,17 @@
 #include "vulkan/vulkan.hpp"
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-using namespace std;
+#ifndef NDEBUG
+#define NDEBUG 0
+#pragma warning("NDEBUG Didn't exist priror to compile!!")
+#endif
 
 class Renderer
 {
 private:
     void InitWindow();
     void InitVulkan();
+    bool CheckValidationLaterSupport();
     void CreateInstance();
     void MainLoop();
     void Cleanup();
@@ -25,8 +29,42 @@ public:
         MainLoop();
         Cleanup();
     }
-};
+    const unsigned int window_width = 400;
+    const unsigned int window_height = 300;
+    const bool enable_validation_layers = NDEBUG ? false: true;
+    const std::vector<const char*> validation_layers = 
+    {
+        "VK_LAYER_KHRONOS_validation"
+    };
 
+};
+bool Renderer::CheckValidationLaterSupport()
+{
+    uint32_t layer_count = 0;
+    vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
+    std::vector<VkLayerProperties> available_layers(layer_count);
+    vkEnumerateInstanceLayerProperties(&layer_count, available_layers.data());
+    for (const char* layer_name : validation_layers)
+    {
+        std::cout << "finding: " << layer_name << std::endl;
+        bool layer_found = false;
+        for(const auto& layer_properties : available_layers)
+        {
+            std::cout << "\tcomparing: " << layer_properties.layerName << std::endl;
+            if(strcmp(layer_name, layer_properties.layerName) == 0)
+            {
+                layer_found = true;
+                break;
+            }
+        }
+        if(layer_found == false)
+        {
+            std::cout << "RUH ROH" << std::endl;
+            return false;
+        }
+    }
+    return true;
+}
 Renderer::Renderer() { }
 Renderer::~Renderer() { }
 
@@ -35,7 +73,7 @@ void Renderer::InitWindow()
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    window = glfwCreateWindow(400, 300, "Vulkanism", nullptr, nullptr);
+    window = glfwCreateWindow(window_width, window_height, "Vulkanism", nullptr, nullptr);
 }
 void Renderer::InitVulkan()
 {
@@ -43,6 +81,10 @@ void Renderer::InitVulkan()
 }
 void Renderer::CreateInstance()
 {
+    if (enable_validation_layers && !CheckValidationLaterSupport())
+    {
+        throw std::runtime_error("validation layers requested, but not supported!");
+    }
     //app info
     VkApplicationInfo app_info = {};
     app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -55,15 +97,40 @@ void Renderer::CreateInstance()
     VkInstanceCreateInfo create_info = {};
     create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     create_info.pApplicationInfo = &app_info;
+    if(enable_validation_layers)
+    {
+        create_info.enabledLayerCount = static_cast<uint32_t>(validation_layers.size());
+        create_info.ppEnabledLayerNames = validation_layers.data();
+    }
     //
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
+    //on linux returns:
+    // VK_KHR_surface (instance requires surface)
+    // VK_KHR_xcb_surface (instance requires x11 surface)
     create_info.enabledExtensionCount = glfwExtensionCount;
     create_info.ppEnabledExtensionNames = glfwExtensions;
     create_info.enabledLayerCount = 0;
-    VkResult resault = vkCreateInstance(&create_info, nullptr, &instance);
+
+    uint32_t extensionCount = 0;
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+    std::vector<VkExtensionProperties> extensions(extensionCount);
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+
+    std::cout << "available extensions:" << std::endl;
+    for (const auto& extension : extensions)
+    {
+        std::cout << "\t" << extension.extensionName << std::endl;
+    }
+    //VK_KHR_wayland_surface is supported, consider using that.
+
+    VkResult result = vkCreateInstance(&create_info, nullptr, &instance);
+    if (result != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create vk instance!");
+    }
+
 }
 void Renderer::MainLoop()
 {
