@@ -34,7 +34,10 @@ public:
     const bool enable_validation_layers = NDEBUG ? false: true;
     const std::vector<const char*> validation_layers = 
     {
-        "VK_LAYER_KHRONOS_validation"
+        // I appear to have very old vulkan libs or something
+        // The below line should be valid. 
+        // "VK_LAYER_KHRONOS_validation"
+        "VK_LAYER_LUNARG_standard_validation"
     };
 
 };
@@ -106,11 +109,13 @@ void Renderer::CreateInstance()
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-    //on linux returns:
-    // VK_KHR_surface (instance requires surface)
-    // VK_KHR_xcb_surface (instance requires x11 surface)
-    create_info.enabledExtensionCount = glfwExtensionCount;
-    create_info.ppEnabledExtensionNames = glfwExtensions;
+    std::vector<const char*> required_extensions(glfwExtensions, glfwExtensions+glfwExtensionCount);
+    if(enable_validation_layers)
+    {
+        required_extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    }
+    create_info.enabledExtensionCount = static_cast<uint32_t>(required_extensions.size());
+    create_info.ppEnabledExtensionNames = required_extensions.data();
     create_info.enabledLayerCount = 0;
 
     uint32_t extensionCount = 0;
