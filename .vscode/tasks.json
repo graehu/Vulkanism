@@ -10,7 +10,7 @@
         {
             "type": "shell",
             "label": "Build All",
-            "command": "/usr/bin/g++",
+            "command": "/usr/bin/clang",
             "args": [
                 "$VULKAN",
                 "$GLFW",
@@ -20,7 +20,8 @@
                 "-o",
                 "Vulkanism.out",
                 "$LINKS",
-                "-v"
+                "-v",
+                "$FLAGS"
             ],
             "options": {
                 "cwd": "${workspaceFolder}",
@@ -30,7 +31,8 @@
                     "GLFW": "-I${config:tasks.GLFW}/include/ -L${config:tasks.GLFW}/lib/",
                     "GLM": "-I${config:tasks.GLM}",
                     "SOURCE": "main.cpp",
-                    "LINKS": "-lvulkan -lglfw"
+                    "LINKS": "-lvulkan -lglfw -lstdc++",
+                    "FLAGS": "-std=c++17"
                 }
             },
             "problemMatcher": [

@@ -1,0 +1,4 @@
+-I../Libs/Vulkan/1.1.121.1/x86_64/include/
+-I../Libs/glfw-3.3/include/
+-I../Libs/glm-0.9.9.6/
+-std=c++17
