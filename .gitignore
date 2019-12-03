@@ -1,6 +1,7 @@
 includes/GLFW
 includes/vulkan
 Vulkanism.out
+*.spv
 GRTAGS
 GTAGS
 GPATH
