@@ -15,17 +15,19 @@ print("")
 # Compile the shaders.
 
 print("Compiling Shaders: ")
-command = "glslangValidator -V triangle.vert"
+command = "glslangValidator -V triangle.vert.glsl"
 
 print(command)
 os.system(command)
 print("")
 
-command = "glslangValidator -V triangle.frag"
+command = "glslangValidator -V triangle.frag.glsl"
 
 print(command)
 os.system(command)
 print("")
+
+# input("")
 
 # Compile the program
 print("\nCompiling Vulkanism: ")
