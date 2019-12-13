@@ -1,9 +1,15 @@
 includes/GLFW
 includes/vulkan
-Vulkanism.out
-*.spv
 GRTAGS
 GTAGS
 GPATH
 TAGS
+*.out
+*.spv
+*.obj
+*.o
+*.pdb
+*.exe
+*.ilk
+
 

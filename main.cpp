@@ -82,6 +82,7 @@ class Renderer
     {
         InitWindow();
         InitVulkan();
+        std::cout << "Begin Drawing!" << std::endl;
         MainLoop();
         Cleanup();
     }
@@ -226,6 +227,7 @@ void Renderer::InitVulkan()
     CreateCommandPool();
     CreateCommandBuffers();
     CreateSemaphores();
+
 }
 void Renderer::CreateSemaphores()
 {

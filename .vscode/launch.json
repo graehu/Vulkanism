@@ -4,8 +4,33 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+            {
+                "name": "Linux Run!",
+                "type": "cppdbg",
+                "request": "launch",
+                "program": "${workspaceFolder}/Vulkanism.out",
+                "args": [],
+                "stopAtEntry": false,
+                "cwd": "${workspaceFolder}",
+                "environment": [
+                    {
+                        "name": "LD_LIBRARY_PATH",
+                        "value": "${config:tasks.Vulkan}/lib/:${config:tasks.GLFW}/lib/"
+                    }
+                ],
+                "externalConsole": false,
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {
+                        "description": "Enable pretty-printing for gdb",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ],
+                "miDebuggerPath": "/usr/bin/gdb"
+            },
         {
-            "name": "Build and Run!",
+            "name": "Linux Build & Run!",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/Vulkanism.out",
@@ -27,8 +52,31 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "Build All",
+            "preLaunchTask": "Build",
             "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "Win Run!",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Vulkanism.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false
+        },
+        {
+            "name": "Win Build & Run!",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Vulkanism.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "preLaunchTask": "Build",
+            "externalConsole": false
         }
     ]
 }
