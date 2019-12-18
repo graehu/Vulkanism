@@ -346,8 +346,16 @@ void Renderer::CreateRenderPass()
     color_attachemnt_reference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
     VkSubpassDescription subpass_description = {};
+    subpass_description.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
     subpass_description.colorAttachmentCount = 1;
     subpass_description.pColorAttachments = &color_attachemnt_reference;
+
+    VkSubpassDependency subpass_dependency = {};
+    subpass_dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    subpass_dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    subpass_dependency.dstSubpass = 0;
+    subpass_dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    subpass_dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
     VkRenderPassCreateInfo render_pass_create_info = {};
     render_pass_create_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -355,13 +363,6 @@ void Renderer::CreateRenderPass()
     render_pass_create_info.pAttachments = &color_attachement;
     render_pass_create_info.subpassCount = 1;
     render_pass_create_info.pSubpasses = &subpass_description;
-
-    VkSubpassDependency subpass_dependency = {};
-    subpass_dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-    subpass_dependency.dstSubpass = 0;
-    subpass_dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-    subpass_dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
     render_pass_create_info.dependencyCount = 1;
     render_pass_create_info.pDependencies = &subpass_dependency;
 
@@ -434,6 +435,7 @@ void Renderer::CreateGraphicsPipeline()
 
     VkPipelineViewportStateCreateInfo viewport_state_create_info = {};
     viewport_state_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewport_state_create_info.viewportCount = 1;
     viewport_state_create_info.pViewports = &viewport;
     viewport_state_create_info.scissorCount = 1;
     viewport_state_create_info.pScissors = &scissor;
@@ -476,6 +478,7 @@ void Renderer::CreateGraphicsPipeline()
     //
 
     VkPipelineColorBlendStateCreateInfo color_blending_create_info = {};
+    color_blending_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
     color_blending_create_info.logicOpEnable = VK_FALSE;
     // logic op is disabled so this line is optional.
     color_blending_create_info.logicOp = VK_LOGIC_OP_COPY;
@@ -705,18 +708,20 @@ QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice physical_device, VkSurface
         if (queue_family.queueCount > 0 && queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT)
         {
             indices.graphics_family = i;
-            break;
         }
-        i++;
-    }
-    if (surface != VK_NULL_HANDLE)
-    {
+        
         VkBool32 present_support = false;
         vkGetPhysicalDeviceSurfaceSupportKHR(physical_device, i, surface, &present_support);
-        if (queue_family_count > 0 && present_support)
+        if (present_support)
         {
             indices.present_family = i;
         }
+        
+        if (indices.IsComplete())
+        {
+            break;
+        }
+        i++;
     }
 
     return indices;
@@ -818,6 +823,7 @@ void Renderer::CreateSwapChain()
     }
     else
     {
+      std::cout << "graphics_family is present_family" << std::endl;
         create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
         create_info.queueFamilyIndexCount = 0;
         create_info.pQueueFamilyIndices = nullptr;
@@ -922,6 +928,7 @@ void Renderer::CreateInstance()
     VkInstanceCreateInfo create_info = {};
     create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     create_info.pApplicationInfo = &app_info;
+    
     VkDebugUtilsMessengerCreateInfoEXT create_debug_info = {};
     if (enable_validation_layers)
     {

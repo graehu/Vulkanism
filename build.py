@@ -23,7 +23,7 @@ def print_success(success_string):
 # Setup environment
 print("Setup Environment: ")
 #TODO: Fix this annoying pathing I had to change here.
-vulkan = "../Libs/Vulkan/1.1.121.2"
+vulkan = "../Libs/Vulkan/1.1.121.1"
 glfw = "../Libs/glfw-3.3"
 source = "main.cpp"
 command = ""
@@ -64,10 +64,10 @@ if os.name == "nt":
 
 else:
     print("Building for linux:\n")
-    includes = "-I"+vulkan+"/include/ -I"+glfw+"/include/ -I../Libs/glm-0.9.9.6/"
+    includes = "-I"+vulkan+"/x86_64/include/ -I"+glfw+"/include/ -I../Libs/glm-0.9.9.6/"
     # set vulkan library path
     # set glfw library path
-    libs = "-L"+vulkan+"/lib/ -L"+glfw+"/lib/"
+    libs = "-L"+vulkan+"/x86_64/lib/ -L"+glfw+"/lib/"
 
 
     # link vulkan shared library
@@ -81,7 +81,8 @@ else:
     # -g : Debug on
     flags = "-std=c++17 -Wall -g"
     compiler = "clang"
-    os.environ["PATH"] = os.environ["PATH"]+":"+vulkan+"/bin/"
+    output = "-o Vulkanism.out"
+    os.environ["PATH"] = os.environ["PATH"]+":"+vulkan+"/x86_64/bin/"
 
 # Add vulkan to the path, allows glslangValidator to be called.
 
