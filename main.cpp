@@ -68,7 +68,7 @@ class Renderer
     void InitWindow();
     void InitVulkan();
     void SetupDebugMessenger();
-    bool CheckValidationLaterSupport();
+    bool CheckValidationLayerSupport();
     void CreateInstance();
     void MainLoop();
     void DrawFrame();
@@ -137,10 +137,10 @@ class Renderer
     static const unsigned int window_height = 300;
     const bool enable_validation_layers = NDEBUG ? false : true;
     const std::vector<const char *> validation_layers = {
-        // I appear to have very old vulkan libs or something
-        // The below line should be valid.
+        // my laptop integrated gpu has no validation layers.
         // "VK_LAYER_KHRONOS_validation"
-        "VK_LAYER_LUNARG_standard_validation"};
+        // "VK_LAYER_LUNARG_standard_validation"
+        };
 
     const std::vector<const char *> device_extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 };
@@ -256,7 +256,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityF
 
     return VK_FALSE;
 }
-bool Renderer::CheckValidationLaterSupport()
+bool Renderer::CheckValidationLayerSupport()
 {
     uint32_t layer_count = 0;
     vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
@@ -1053,7 +1053,8 @@ bool IsDeviceSuitable(VkPhysicalDevice physical_device, VkSurfaceKHR surface,
     QueueFamilyIndices indices = FindQueueFamilies(physical_device, surface);
     bool extensions_supported = CheckDeviceExtensionSupport(physical_device, device_extensions);
     bool suitable_device = indices.IsComplete();
-    suitable_device = suitable_device && device_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+    suitable_device = suitable_device && (device_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ||
+                                          device_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU);
     suitable_device = suitable_device && device_features.geometryShader;
     suitable_device = suitable_device && extensions_supported;
     bool swap_chain_adequate = false;
@@ -1106,7 +1107,7 @@ void Renderer::PickPhysicalDevice()
 void Renderer::CreateInstance()
 {
     std::cout << "Create Instance" << std::endl;
-    if (enable_validation_layers && !CheckValidationLaterSupport())
+    if (enable_validation_layers && !CheckValidationLayerSupport())
     {
         throw std::runtime_error("validation layers requested, but not supported!");
     }

@@ -4,7 +4,6 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}",
-                "${workspaceFolder}/${config:tasks.SFML}/include",
                 "${workspaceFolder}/${config:tasks.Vulkan}/x86_64/include",
                 "${workspaceFolder}/${config:tasks.GLFW}/include",
                 "${workspaceFolder}/${config:tasks.GLM}/"

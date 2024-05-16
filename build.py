@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os
 
 class bcolors:
@@ -23,8 +23,8 @@ def print_success(success_string):
 # Setup environment
 print("Setup Environment: ")
 #TODO: Fix this annoying pathing I had to change here.
-vulkan = "../Libs/Vulkan/1.1.121.1"
-glfw = "../Libs/glfw-3.3"
+vulkan = "../Libs/Vulkan/1.3.280.1"
+glfw = "../Libs/glfw-3.4"
 source = "main.cpp"
 command = ""
 
@@ -50,7 +50,7 @@ if os.name == "nt":
     vs_tools = "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools/"
 
     libs = "/LIBPATH:"+vulkan+"/lib32/"+" /LIBPATH:"+glfw+"/lib32/"
-    includes = "/I"+vulkan+"/include/"+" /I"+glfw+"/include/"+" /I"+os.path.abspath("../Libs/glm-0.9.9.6/")
+    includes = "/I"+vulkan+"/include/"+" /I"+glfw+"/include/"+" /I"+os.path.abspath("../Libs/glm/")
     links = "/link vulkan-1.lib VkLayer_utils.lib shaderc_combined.lib glfw3.lib glfw3dll.lib msvcrt.lib msvcmrt.lib User32.lib Gdi32.lib Shell32.lib"
     flags = "/W4 /EHsc /Zi /std:c++17"
     output = "/Fe:Vulkanism.exe"
@@ -64,16 +64,16 @@ if os.name == "nt":
 
 else:
     print("Building for linux:\n")
-    includes = "-I"+vulkan+"/x86_64/include/ -I"+glfw+"/include/ -I../Libs/glm-0.9.9.6/"
+    includes = "-I"+vulkan+"/x86_64/include/ -I"+glfw+"/include/ -I../Libs/glm/"
     # set vulkan library path
     # set glfw library path
-    libs = "-L"+vulkan+"/x86_64/lib/ -L"+glfw+"/lib/"
+    libs = "-L"+vulkan+"/x86_64/lib/ -L"+glfw+"/src/"
 
 
     # link vulkan shared library
     # link glfw shared library
     # link standard c++ shared library
-    links = "-lvulkan -lglfw -lstdc++"
+    links = "-lvulkan -lglfw3 -lstdc++ -lm"
 
 
     # -std=c++17 : Set C++17 compliancy
